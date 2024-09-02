@@ -9,8 +9,11 @@ public class PlayerController : MonoBehaviour
     public CameraFollow cameraScript;
     Vector3 karakterinNeKadarOnundeOlsun;
     public Animator animator;
-
     private SpriteRenderer spriteRenderer;
+
+    public Transform bulletSpawnPoint;
+    public GameObject bulletPrefab;
+    public float bulletSpeed = 10;
 
     void Start()
     {
@@ -26,7 +29,47 @@ public class PlayerController : MonoBehaviour
         Jump();
         CameraOffset();
         FlipPlayerFace();
+        PlayShootAnim();
     }
+
+    void PlayShootAnim()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            animator.SetTrigger("hitShoot");
+            //StartCoroutine(Shoot());
+            Invoke("Shoot", 0.8f); // 0.8 saniye bekledikten sonra Shoot fonksiyonunu çalıştırır.
+        }
+    }
+    
+    public void Shoot()
+    {
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
+        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+        if (spriteRenderer.flipX)
+        {
+            rb.velocity = transform.right * -bulletSpeed;
+        }
+        else
+        {
+            rb.velocity = transform.right * bulletSpeed;
+        }
+    }
+
+    // public IEnumerator Shoot()
+    // {
+    //     yield return new WaitForSeconds(0.8f);
+    //     GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
+    //     Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+    //     if (spriteRenderer.flipX)
+    //     {
+    //         rb.velocity = transform.right * -bulletSpeed;
+    //     }
+    //     else
+    //     {
+    //         rb.velocity = transform.right * bulletSpeed;
+    //     }
+    // }
 
     private void FlipPlayerFace()
     {
@@ -63,7 +106,8 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("isRunning", true);
             animator.SetBool("isIdle", false);
-        }else
+        }
+        else
         {
             animator.SetBool("isRunning", false);
             animator.SetBool("isIdle", true);
