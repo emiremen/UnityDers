@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         Move();
         Jump();
-        CameraOffset();
+        //CameraOffset();
         FlipPlayerFace();
         PlayShootAnim();
     }
@@ -38,10 +38,10 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger("hitShoot");
             //StartCoroutine(Shoot());
-            Invoke("Shoot", 0.8f); // 0.8 saniye bekledikten sonra Shoot fonksiyonunu çalıştırır.
+            Invoke("Shoot", 0.8f / 1.8f); // 0.8 saniye bekledikten sonra Shoot fonksiyonunu çalıştırır.
         }
     }
-    
+
     public void Shoot()
     {
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
@@ -56,30 +56,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // public IEnumerator Shoot()
-    // {
-    //     yield return new WaitForSeconds(0.8f);
-    //     GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
-    //     Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-    //     if (spriteRenderer.flipX)
-    //     {
-    //         rb.velocity = transform.right * -bulletSpeed;
-    //     }
-    //     else
-    //     {
-    //         rb.velocity = transform.right * bulletSpeed;
-    //     }
-    // }
-
     private void FlipPlayerFace()
     {
         if (Input.GetAxisRaw("Horizontal") > 0)
         {
             spriteRenderer.flipX = false;
+            bulletSpawnPoint.localPosition = new Vector3(bulletSpawnPoint.localPosition.x, bulletSpawnPoint.localPosition.y, bulletSpawnPoint.localPosition.z);
         }
         else if (Input.GetAxisRaw("Horizontal") < 0)
         {
             spriteRenderer.flipX = true;
+            bulletSpawnPoint.localPosition = new Vector3(-bulletSpawnPoint.localPosition.x, bulletSpawnPoint.localPosition.y, bulletSpawnPoint.localPosition.z);
         }
     }
 
@@ -119,7 +106,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            rb.velocity = new Vector2(rb.velocity.x, ziplamaGucu);
+            rb.velocity = new Vector2(rb.velocity.x, ziplamaGucu * Time.deltaTime);
         }
     }
 

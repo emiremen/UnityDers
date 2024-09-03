@@ -16,6 +16,13 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        if (pointA == null && pointB == null){
+            pointA = new GameObject().transform;
+            pointB = new GameObject().transform;
+            pointA.transform.position = new Vector3(transform.root.position.x - 2, 0, 0);
+            pointB.transform.position = new Vector3(transform.root.position.x + 2, 0, 0);
+        }
+
         nextPosition = pointB.position;
     }
 
@@ -86,6 +93,12 @@ public class Enemy : MonoBehaviour
         {
             //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+        if (enemininDegdigiNesne.gameObject.tag == "Bullet")
+        {
+            enemininDegdigiNesne.gameObject.GetComponent<Collider2D>().enabled = false;
+            Destroy(enemininDegdigiNesne.gameObject);
+            StartCoroutine(ChangeEnemyColor());
+        }
     }
 
     // void OnCollisionEnter2D(Collision2D enemininDegdigiNesne)
@@ -95,4 +108,20 @@ public class Enemy : MonoBehaviour
     //         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     //     }
     // }
+
+
+    IEnumerator ChangeEnemyColor()
+    {
+        GetComponent<SpriteRenderer>().color = Color.red;
+        Time.timeScale = 0.5f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        yield return new WaitForSeconds(1);
+        GetComponent<SpriteRenderer>().color = Color.white;
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = 0.02F;
+        yield return new WaitForSeconds(1);
+        UIManager.instance.UpdateScore();
+        UIManager.instance.SaveScore();
+        Destroy(gameObject);
+    }
 }
